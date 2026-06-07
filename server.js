@@ -2,9 +2,10 @@ import env from "dotenv";
 import express from "express";
 import cors from "cors";
 import { connectDb } from "./config/db.js";
-import errorHandler from "./middleware/errorHandler.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { validateEnv } from "./helper/validateEnv.js";
 env.config();
-
+validateEnv();
 const PORT = process.env.PORT || 5000;
 const app = express();
 connectDb();
@@ -15,9 +16,10 @@ app.use(cors());
 app.get("/checkHealth", (req, res) => {
   res.send("Server is running");
 });
+
 //GLOBAL ERROR HANDELING
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server is running in port ${PORT}`);
+  console.log(`Server is running in port ${process.env.PORT}`);
 });
