@@ -1,0 +1,22 @@
+import z from "zod";
+export const registerUserSchema = z.object({
+  userName: z
+    .string("userName is required")
+    .min(2, "userName must be at least 2 character long ")
+    .max(10, "User Name must be at most 10 character long ")
+    .regex(/^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, "Please provide the valid userName"),
+  email: z
+    .email("please provide the valid email")
+    .includes(
+      "@",
+      "Please peovide the valid email in the format of the ...@...",
+    ),
+  password: z
+    .string("Please provide the valid password")
+    .min(6, "password must be at least 6 character ")
+    .max(12, "password must be he at most 12 character long ")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    ),
+});
