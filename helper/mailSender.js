@@ -1,6 +1,10 @@
 import pug from "pug";
 import nodemailer from "nodemailer";
-import { emailConfig } from "../config/mailConfig";
+import path from "node:path";
+import { emailConfig } from "../config/mailConfig.js";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 const transporter = nodemailer.createTransport(emailConfig);
 export const sendEmailWithTemplate = async (
   receiverEmail,
@@ -8,7 +12,9 @@ export const sendEmailWithTemplate = async (
   emailTitle,
   datas,
 ) => {
-  const templatePath = path.join(__dirname, "../template", emailTemplate);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const templatePath = path.join(__dirname, "../templete", emailTemplate);
 
   const compiledFunction = pug.compileFile(templatePath);
   //compile function will put the values in the above data like name ddata s in compilefunction name will replace by it
@@ -22,6 +28,7 @@ export const sendEmailWithTemplate = async (
   try {
     await transporter.sendMail(emailDetails);
   } catch (error) {
+    console.log(error);
     console.log(`error Sending the mail ${error.message}`);
   }
 };
