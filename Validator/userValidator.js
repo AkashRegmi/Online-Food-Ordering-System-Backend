@@ -41,3 +41,16 @@ export const loginUserSchema = z.object({
     .min(6, "password must be at least 6 character ")
     .max(12, "password must be he at most 12 character long "),
 });
+
+export const resetPasswordSchema = z.object({
+  password: z.string("Please Provide the Password").trim(),
+  newPassword: z
+    .string("Please provide the new Password")
+    .min(6, "New password must be at least 6 character ")
+    .max(12, "New password must be he at most 12 character long ")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/,
+      "New Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    )
+    .trim(),
+});

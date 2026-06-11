@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "worker:email": "node worker/emailWorker.js",
     "workers": "concurrently \"npm run worker:email\"",
+    "seed":"node ./script/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
