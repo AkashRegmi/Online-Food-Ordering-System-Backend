@@ -130,3 +130,75 @@ export const login = async (req, res) => {
     console.log(error);
   }
 };
+
+export const resendOtp = async (req, res) => {
+  try {
+    //take the email from the body
+    const { email } = req.body;
+    //vlaidae the email is that emal exist andthe account status is true
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return responseToClient(res, 400, false, "user not found");
+    }
+    const otp = generateOtp(5);
+    const otpExpiry = new Date(new Date().getMinutes() + 30);
+    //generate the otp
+    existingUser.otp = otp;
+    existingUser.otpExpiry = otpExpiry;
+    await existingUser.save();
+    //send the otp to mail
+    await sendEmailHelper(
+      "otp_email",
+      email,
+      "otp.pug",
+      "Verify your Account",
+      {
+        name: existingUser.userName,
+        otp,
+      },
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    //take the actual email, password and newPassword
+    const { email, password, newPassword } = req.body;
+    //checl the user and check the user is verified
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return responseToClient(res, 400, false, "User not found");
+    }
+    if (!existingUser.isActive) {
+      return responseToClient(res, 400, false, "Please verify your account");
+    }
+    //check the password
+    const isVAlidPassword = await bcrypt.compare(
+      password,
+      existingUser.password,
+    );
+    if (!isVAlidPassword) {
+      return responseToClient(res, 400, false, "Invalid Password");
+    }
+    const isSamePassword = await bcrypt.compare(
+      newPassword,
+      existingUser.password,
+    );
+    if (isSamePassword) {
+      return responseToClient(
+        res,
+        400,
+        false,
+        "New Password cannot be same as before ",
+      );
+    }
+    //then update the passwird
+    existingUser.password = newPassword;
+    await existingUser.save();
+    return responseToClient(res, 200, true, "Password reset Successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
