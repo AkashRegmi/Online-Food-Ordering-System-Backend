@@ -15,6 +15,7 @@ connectRedis();
 //middleWare
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Helath of the Server
 app.get("/checkHealth", (req, res) => {
