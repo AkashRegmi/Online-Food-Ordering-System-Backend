@@ -8,7 +8,7 @@
     "dev": "nodemon server.js",
     "worker:email": "node worker/emailWorker.js",
     "workers": "concurrently \"npm run worker:email\"",
-    "seed":"node ./script/seed.js",
+    "seed": "node ./script/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,6 +26,7 @@
     "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.3",
+    "multer": "^2.1.1",
     "nodemailer": "^8.0.10",
     "nodemon": "^3.1.14",
     "pug": "^3.0.4",
