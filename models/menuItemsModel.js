@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import { lowercase } from "zod";
 const menuItemSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: [true, "Menu item name is required"],
       trim: true,
+      lowercase: true,
       minlength: [2, "Name must be at least 2 characters long"],
       maxlength: [100, "Name cannot exceed 100 characters"],
       index: true,
