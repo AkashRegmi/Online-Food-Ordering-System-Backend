@@ -2,6 +2,8 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { maxSize } from "zod";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 //her is the reference of the file that is expected to come when uploaded
 // {
 //   fieldname: 'cv',
@@ -13,18 +15,19 @@ import { maxSize } from "zod";
 //   path: 'uploads/cv/1722333445-123456.pdf',
 //   size: 254321
 // }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 export const createUploader = ({ allowedTypes = [], maxSize = 5 }) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       const uploadPath = path.join(__dirname, "..", "uploads", file.fieldname);
-      //create the upload folder if that doesnot exist
       fs.mkdirSync(uploadPath, { recursive: true });
       cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      const extNmae = path.extname(originalname);
-      cb(null, file.fieldname + "-" + uniqueSuffix + extNmae);
+      const extName = path.extname(file.originalname);
+      cb(null, file.fieldname + "-" + uniqueSuffix + extName);
     },
   });
   //managing the file filter
@@ -39,9 +42,12 @@ export const createUploader = ({ allowedTypes = [], maxSize = 5 }) => {
       // .docx
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-    const allowedTypes = [];
+
+    const allowedMimeTypes = [];
+
     if (allowedTypes.includes("image")) {
       allowedMimeTypes.push(...imageTypes);
+      console.log(allowedMimeTypes);
     }
     if (allowedTypes.includes("document")) {
       allowedMimeTypes.push(...documentTypes);
