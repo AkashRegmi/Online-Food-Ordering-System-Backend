@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { validateEnv } from "./helper/validateEnv.js";
 import { connectRedis } from "./config/redis.js";
 import authRoute from "./routes/userRoutes.js";
+import menuRoute from "./routes/menuRoute.js";
 dotenv.config();
 validateEnv();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.get("/checkHealth", (req, res) => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api", menuRoute);
 
 //GLOBAL ERROR HANDELING
 app.use(errorHandler);

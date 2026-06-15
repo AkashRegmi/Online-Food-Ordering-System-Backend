@@ -1,7 +1,23 @@
+import fs from "fs";
 export const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || "Internal Server Error";
-
+  if (req.file) {
+    try {
+      fs.unlinkSync(req.file.path);
+    } catch (fileErr) {
+      console.error("File cleanup failed:", fileErr.message);
+    }
+  }
+  if (req.files && Array.isArray(req.files)) {
+    try {
+      req.files.array.forEach((file) => {
+        fs.unlinkSync(file.path);
+      });
+    } catch (error) {
+      console.error("Files deletion cleanUp Error", error.message);
+    }
+  }
   // Mongoose Validation Error
   if (err.name === "ValidationError") {
     statusCode = 400;
@@ -46,5 +62,3 @@ export const errorHandler = (err, req, res, next) => {
     error: message,
   });
 };
-
-
