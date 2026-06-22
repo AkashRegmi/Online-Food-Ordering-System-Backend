@@ -20,7 +20,8 @@ const __dirname = dirname(__filename);
 export const createUploader = ({ allowedTypes = [], maxSize = 5 }) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      const uploadPath = path.join(__dirname, "..", "uploads", file.fieldname);
+      // const uploadPath = path.join(__dirname, "..", "uploads", file.fieldname);
+      const uploadPath = path.join("uploads", file.fieldname);
       fs.mkdirSync(uploadPath, { recursive: true });
       cb(null, uploadPath);
     },
