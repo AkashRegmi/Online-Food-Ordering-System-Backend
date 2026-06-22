@@ -1,6 +1,6 @@
-import { responseToClient } from "../helper/response";
+import { responseToClient } from "../helper/response.js";
 import jwt from "jsonwebtoken";
-import User from "../models/userModel";
+import User from "../models/userModel.js";
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeaders = req.headers["authorization"];

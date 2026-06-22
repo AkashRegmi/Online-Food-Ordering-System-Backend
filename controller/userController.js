@@ -89,6 +89,7 @@ export const login = async (req, res) => {
     if (!userExist) {
       return responseToClient(
         res,
+        req,
         400,
         false,
         "User Not found.Please Sign Up.",
@@ -99,6 +100,7 @@ export const login = async (req, res) => {
     if (!userExist.isActive) {
       return responseToClient(
         res,
+        req,
         400,
         false,
         "Please verify your account to login",
@@ -109,6 +111,7 @@ export const login = async (req, res) => {
     if (!isVerified) {
       return responseToClient(
         res,
+        req,
         400,
         false,
         "Password doesnot match. Please provide correct password",
@@ -122,7 +125,7 @@ export const login = async (req, res) => {
     //if password is correct then send the token
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
-    return responseToClient(res, 200, true, "Login Successfull", {
+    return responseToClient(res,req, 200, true, "Login Successfull", {
       accessToken,
       refreshToken,
     });
