@@ -22,7 +22,7 @@ router.post(
   createMenuItem,
 );
 router.get("/menu/:id", authenticateToken, getMenuByIdController);
-router.get("/menu", authenticateToken, getAllMenuControlller);
+router.get("/menu",  getAllMenuControlller);
 router.delete("/menu/:id", authenticateToken, deleteMenuIteController);
 
 export default router;
