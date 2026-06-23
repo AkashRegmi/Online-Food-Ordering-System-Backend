@@ -133,3 +133,41 @@ export const deleteMenuIteController = async (req, res) => {
     throw error;
   }
 };
+
+//update the menu itemm
+const updatemenuItems = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await validateId(id);
+    const { name, description, price, category } = req.body;
+
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+    if (price) updateData.price = price;
+    if (category) updateData.category = category;
+    const updateMenu = await MenuItem.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updateMenu) {
+      return responseToClient(
+        res,
+        req,
+        400,
+        false,
+        "Failed to update the Menu",
+      );
+    }
+    return responseToClient(
+      res,
+      req,
+      200,
+      true,
+      "menu Item updated Successfully",
+    );
+  } catch (error) {
+    throw error;
+  }
+};
