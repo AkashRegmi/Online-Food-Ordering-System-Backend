@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
     //checking the existing user
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
-      return responseToClient(res, 409, false, `email ${email} already exist`);
+      return responseToClient(res,req, 409, false, `email ${email} already exist`);
     }
     const otp = generateOtp(5);
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
@@ -38,6 +38,7 @@ export const registerUser = async (req, res) => {
     );
     return responseToClient(
       res,
+      req,
       201,
       true,
       "User registered successfully. OTP sent to email.",
@@ -54,28 +55,29 @@ export const verifyOtpAfterRegister = async (req, res) => {
     if (!checkExistingUser) {
       return responseToClient(
         res,
+        req,
         400,
         false,
         `User with email ${email} doesnot exist. please Sign up `,
       );
     }
     if (!otp) {
-      return responseToClient(res, 400, false, "Pleaase provide the otp");
+      return responseToClient(res, req,400, false, "Pleaase provide the otp");
     }
     if (checkExistingUser.otp !== otp) {
-      return responseToClient(res, 400, false, "Invalid otp");
+      return responseToClient(res,req, 400, false, "Invalid otp");
     }
     if (
       !checkExistingUser.otpExpire ||
       checkExistingUser.otpExpire < Date.now()
     ) {
-      return responseToClient(res, 400, false, "OTP expired");
+      return responseToClient(res,req, 400, false, "OTP expired");
     }
     checkExistingUser.isActive = true;
     checkExistingUser.otp = null;
     checkExistingUser.otpExpire = null;
     await checkExistingUser.save();
-    return responseToClient(res, 200, true, "Otp verified Successfully");
+    return responseToClient(res,req, 200, true, "Otp verified Successfully");
   } catch (error) {
     console.log(error);
   }
