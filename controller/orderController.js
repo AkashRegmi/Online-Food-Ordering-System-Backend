@@ -219,3 +219,110 @@ export const deleteOrder = async (req, res, next) => {
     next(error);
   }
 };
+export const updateOrder = async (req, res, next) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { items, address, notes } = req.body;
+
+    const isAdmin = req?.user?.role === "admin";
+    const query = isAdmin ? { id: _id } : { id: _id, user: userId };
+
+    const order = await Order.findOne(query).session(session);
+
+    if (!order) {
+      await session.abortTransaction();
+
+      return responseToClient(res, req, 404, false, "Order not found");
+    }
+
+    if (!isAdmin && ["delivered", "cancelled"].includes(order.status)) {
+      await session.abortTransaction();
+
+      return responseToClient(
+        res,
+        req,
+        400,
+        false,
+        `Cannot update a ${order.status} order`,
+      );
+    }
+
+    // Update items if provided
+    if (items) {
+      const menuIds = items.map((item) => item.menuItem);
+
+      const menuItems = await MenuItem.find({
+        _id: { $in: menuIds },
+      }).session(session);
+
+      if (menuItems.length !== items.length) {
+        await session.abortTransaction();
+
+        return responseToClient(
+          res,
+          req,
+          404,
+          false,
+          "One or more menu items not found",
+        );
+      }
+      if (isAdmin && status !== undefined) {
+        order.status = status;
+      }
+
+      const menuMap = new Map();
+
+      menuItems.forEach((menu) => {
+        menuMap.set(menu._id.toString(), menu);
+      });
+
+      let totalAmount = 0;
+
+      const orderItems = items.map((item) => {
+        const menu = menuMap.get(item.menuItem);
+
+        totalAmount += menu.price * item.quantity;
+
+        return {
+          menuItem: menu._id,
+          quantity: item.quantity,
+          priceAtPurchase: menu.price,
+        };
+      });
+
+      order.items = orderItems;
+      order.totalAmount = totalAmount;
+    }
+
+    if (address !== undefined) {
+      order.address = address;
+    }
+
+    if (notes !== undefined) {
+      order.notes = notes;
+    }
+
+    await order.save({ session });
+
+    await session.commitTransaction();
+
+    return responseToClient(
+      res,
+      req,
+      200,
+      true,
+      "Order updated successfully",
+      order,
+    );
+  } catch (error) {
+    await session.abortTransaction();
+    next(error);
+  } finally {
+    session.endSession();
+  }
+};

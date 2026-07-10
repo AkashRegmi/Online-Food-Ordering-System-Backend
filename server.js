@@ -8,6 +8,7 @@ import { connectRedis } from "./config/redis.js";
 import authRoute from "./routes/userRoutes.js";
 import menuRoute from "./routes/menuRoute.js";
 import orderRoute from "./routes/orderRoute.js";
+import dashboardRoute from "./routes/dashboardRoute.js";
 dotenv.config();
 validateEnv();
 const PORT = process.env.PORT || 5000;
