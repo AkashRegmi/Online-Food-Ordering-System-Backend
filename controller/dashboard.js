@@ -1,3 +1,4 @@
+import { responseToClient } from "../helper/response.js";
 import Order from "../models/orderModel.js";
 
 export const getOrderInfo = async (req, res, next) => {
@@ -51,11 +52,22 @@ export const getOrderInfo = async (req, res, next) => {
     200,
     true,
     "Order statistics fetched successfully",
-    // {
-    //   totalIncome: stats?.totalIncome || 0,
-    //   totalOrders: stats?.totalOrders || 0,
-    //   pendingOrders: stats?.pendingOrders || 0,
-    // },
     stats,
   );
+};
+
+export const recentOrder = async (req, res, next) => {
+  try {
+    const data = await Order.find().populate("user").sort({ createdAt: -1 });
+    return responseToClient(
+      res,
+      req,
+      200,
+      true,
+      "Data fetch Successfully",
+      data,
+    );
+  } catch (error) {
+    next(error);
+  }
 };
