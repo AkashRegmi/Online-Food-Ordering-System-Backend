@@ -28,6 +28,7 @@ app.get("/checkHealth", (req, res) => {
 app.use("/api/auth", authRoute);
 app.use("/api", menuRoute);
 app.use("/api/", orderRoute);
+app.use("/api", dashboardRoute);
 
 //GLOBAL ERROR HANDELING
 app.use(errorHandler);
