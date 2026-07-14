@@ -14,7 +14,7 @@ const orderItemSchema = new mongoose.Schema(
       min: [1, "Quantity must be at least 1"],
     },
 
-    price: {
+    priceAtPurchase: {
       type: Number,
       required: [true, "Item price is required"],
       min: [0, "Price cannot be negative"],
@@ -66,6 +66,11 @@ const orderSchema = new mongoose.Schema(
       trim: true,
       minlength: [10, "Address must be at least 10 characters long"],
       maxlength: [300, "Address cannot exceed 300 characters"],
+    },
+    notes: {
+      type: String,
+      trim: true,
+      maxlength: 200,
     },
   },
   {

@@ -4,8 +4,7 @@ export const menuItemsSchema = z.object({
     .string("Menu item name is required")
     .trim()
     .min(2, "Name must be at least 2 characters long")
-    .max(100, "Name cannot exceed 100 characters")
-    .regex(/^[A-Za-z]+$/, "Only character is allowed"),
+    .max(100, "Name cannot exceed 100 characters"),
   description: z
     .string("Description is required")
     .trim()

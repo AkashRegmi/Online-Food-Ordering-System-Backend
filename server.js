@@ -6,11 +6,19 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { validateEnv } from "./helper/validateEnv.js";
 import { connectRedis } from "./config/redis.js";
 import authRoute from "./routes/userRoutes.js";
+import menuRoute from "./routes/menuRoute.js";
+import orderRoute from "./routes/orderRoute.js";
+import dashboardRoute from "./routes/dashboardRoute.js";
+import contactRouter from "./routes/contactusRoute.js";
+import { connectPgDb } from "./config/pgdb.js";
+import { initializeDatabase } from "./initializeDatabase/initializeDatabase .js";
 dotenv.config();
 validateEnv();
 const PORT = process.env.PORT || 5000;
 const app = express();
 connectDb();
+connectPgDb();
+await initializeDatabase();
 connectRedis();
 //middleWare
 app.use(cors());
@@ -23,6 +31,10 @@ app.get("/checkHealth", (req, res) => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api", menuRoute);
+app.use("/api/", orderRoute);
+app.use("/api", dashboardRoute);
+app.use("/api", contactRouter);
 
 //GLOBAL ERROR HANDELING
 app.use(errorHandler);

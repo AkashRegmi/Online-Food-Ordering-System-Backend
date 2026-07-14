@@ -43,7 +43,7 @@ const menuItemSchema = new mongoose.Schema(
       },
       index: true,
     },
-    imageUrl: {
+    menuImage: {
       type: String,
       required: [true, "Image URL is required"],
       trim: true,
