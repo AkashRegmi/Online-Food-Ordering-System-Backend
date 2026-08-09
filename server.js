@@ -6,6 +6,8 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { validateEnv } from "./helper/validateEnv.js";
 import { connectRedis } from "./config/redis.js";
 import authRoute from "./routes/userRoutes.js";
+import googleRoute from "./routes/googleRoute.js";
+import googleCallbackRoute from "./routes/googleCallbackRoute.js";
 import menuRoute from "./routes/menuRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import dashboardRoute from "./routes/dashboardRoute.js";
@@ -31,6 +33,8 @@ app.get("/checkHealth", (req, res) => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api/auth", googleRoute);
+app.use("/auth", googleCallbackRoute);
 app.use("/api", menuRoute);
 app.use("/api/", orderRoute);
 app.use("/api", dashboardRoute);
